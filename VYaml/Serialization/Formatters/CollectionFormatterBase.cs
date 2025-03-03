@@ -64,6 +64,11 @@ namespace VYaml.Serialization
                 return readonlyCollection.Count;
             }
 
+            if (sequence is IEnumerable<TElement> enumerable)
+            {
+                return 1;  // assume there is at least one element
+            }
+
             return null;
         }
 
