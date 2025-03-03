@@ -101,7 +101,8 @@ class TypeMeta
                 .Where(x =>
                 {
                     if (x.ContainsAttribute(references.YamlIgnoreAttribute)) return false;
-                    if (x.DeclaredAccessibility != Accessibility.Public) return false;
+                    if (x.DeclaredAccessibility != Accessibility.Public &&
+                        !x.ContainsAttribute(references.YamlMemberAttribute)) return false;
 
                     if (x is IPropertySymbol p)
                     {
