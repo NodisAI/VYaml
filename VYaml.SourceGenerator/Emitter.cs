@@ -348,7 +348,7 @@ static class Emitter
             {
                 return constructedMembers.All(constructedMember => !SymbolEqualityComparer.Default.Equals(x.Symbol, constructedMember.Symbol));
             })
-            .ToArray();
+            .ToList();
 
         foreach (var setterMember in setterMembers)
         {
@@ -462,7 +462,7 @@ static class Emitter
             codeWriter.Append($"{typeMeta.TypeName}", false);
         }
 
-        if (setterMembers.Length > 0)
+        if (setterMembers.Count > 0)
         {
             using (codeWriter.BeginBlockScope())
             {

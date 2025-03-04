@@ -94,31 +94,24 @@ class TypeMeta
 
     MemberMeta[] GetSerializeMembers()
     {
-        if (memberMetas == null)
-        {
-            memberMetas = Symbol.GetAllMembers() // iterate includes parent type
-                .Where(x => x is (IFieldSymbol or IPropertySymbol) and { IsStatic: false, IsImplicitlyDeclared: false })
-                .Where(x =>
-                {
-                    if (x.ContainsAttribute(references.YamlIgnoreAttribute)) return false;
-                    if (x.DeclaredAccessibility != Accessibility.Public &&
-                        !x.ContainsAttribute(references.YamlMemberAttribute)) return false;
+        return memberMetas ??= Symbol.GetAllMembers()  // iterate includes parent type
+            .Where(x => x is (IFieldSymbol or IPropertySymbol) and { IsStatic: false, IsImplicitlyDeclared: false })
+            .Where(x =>
+            {
+                if (x.ContainsAttribute(references.YamlIgnoreAttribute)) return false;
+                if (x.DeclaredAccessibility != Accessibility.Public &&
+                    !x.ContainsAttribute(references.YamlMemberAttribute)) return false;
 
-                    if (x is IPropertySymbol p)
-                    {
-                        // set only can't be serializable member
-                        if (p.GetMethod == null && p.SetMethod != null)
-                        {
-                            return false;
-                        }
-                        if (p.IsIndexer) return false;
-                    }
-                    return true;
-                })
-                .Select((x, i) => new MemberMeta(x, references, i, NamingConventionByType))
-                .OrderBy(x => x.Order)
-                .ToArray();
-        }
-        return memberMetas;
+                if (x is IPropertySymbol p)
+                {
+                    // set only can't be serializable member
+                    if (p.GetMethod == null && p.SetMethod != null) return false;
+                    if (p.IsIndexer) return false;
+                }
+                return true;
+            })
+            .Select((x, i) => new MemberMeta(x, references, i, NamingConventionByType))
+            .OrderBy(x => x.Order)
+            .ToArray();
     }
 }

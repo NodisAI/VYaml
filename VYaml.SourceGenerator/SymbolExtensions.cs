@@ -6,26 +6,26 @@ namespace VYaml.SourceGenerator;
 
 static class SymbolExtensions
 {
-    public static bool ContainsAttribute(this ISymbol symbol, INamedTypeSymbol attribtue)
+    public static bool ContainsAttribute(this ISymbol symbol, INamedTypeSymbol attribute)
     {
-        return symbol.GetAttributes().Any(x => SymbolEqualityComparer.Default.Equals(x.AttributeClass, attribtue));
+        return symbol.GetAttributes().Any(x => SymbolEqualityComparer.Default.Equals(x.AttributeClass, attribute));
     }
 
-    public static AttributeData? GetAttribute(this ISymbol symbol, INamedTypeSymbol attribtue)
+    public static AttributeData? GetAttribute(this ISymbol symbol, INamedTypeSymbol attribute)
     {
-        return symbol.GetAttributes().FirstOrDefault(x => SymbolEqualityComparer.Default.Equals(x.AttributeClass, attribtue));
+        return symbol.GetAttributes().FirstOrDefault(x => SymbolEqualityComparer.Default.Equals(x.AttributeClass, attribute));
     }
 
-    public static AttributeData? GetImplAttribute(this ISymbol symbol, INamedTypeSymbol implAttribtue)
+    public static AttributeData? GetImplAttribute(this ISymbol symbol, INamedTypeSymbol implAttribute)
     {
         return symbol.GetAttributes().FirstOrDefault(x =>
         {
             if (x.AttributeClass == null) return false;
-            if (x.AttributeClass.EqualsUnconstructedGenericType(implAttribtue)) return true;
+            if (x.AttributeClass.EqualsUnconstructedGenericType(implAttribute)) return true;
 
             foreach (var item in x.AttributeClass.GetAllBaseTypes())
             {
-                if (item.EqualsUnconstructedGenericType(implAttribtue))
+                if (item.EqualsUnconstructedGenericType(implAttribute))
                 {
                     return true;
                 }
@@ -34,26 +34,44 @@ static class SymbolExtensions
         });
     }
 
-    public static IEnumerable<ISymbol> GetAllMembers(this INamedTypeSymbol symbol, bool withoutOverride = true)
+    public static IEnumerable<ISymbol> GetAllMembers(this INamedTypeSymbol? symbol)
     {
-        // Iterate Parent -> Derived
-        if (symbol.BaseType != null)
+        var ignoredSymbols = new HashSet<ISymbol>(SymbolEqualityComparer.Default);
+
+        while (symbol != null && symbol.SpecialType != SpecialType.System_Object)
         {
-            foreach (var item in GetAllMembers(symbol.BaseType))
+            foreach (var member in symbol.GetMembers())
             {
-                // override item already iterated in parent type
-                if (!withoutOverride || !item.IsOverride)
+                if (member.IsAbstract || ignoredSymbols.Contains(member)) continue;
+                yield return member;
+                foreach (var ignoredSymbol in GetIgnoredSymbols(member))
                 {
-                    yield return item;
+                    ignoredSymbols.Add(ignoredSymbol);
                 }
             }
+
+            symbol = symbol.BaseType;
         }
 
-        foreach (var item in symbol.GetMembers())
+        IEnumerable<ISymbol> GetIgnoredSymbols(ISymbol? memberSymbol)
         {
-            if (!withoutOverride || !item.IsOverride)
+            while (memberSymbol != null)
             {
-                yield return item;
+                switch (memberSymbol)
+                {
+                    case IPropertySymbol { OverriddenProperty: { } overriddenProperty }:
+                        memberSymbol = overriddenProperty;
+                        break;
+                    case IEventSymbol { OverriddenEvent: { } overriddenEvent }:
+                        memberSymbol = overriddenEvent;
+                        break;
+                    case IMethodSymbol { OverriddenMethod: { } overriddenMethod }:
+                        memberSymbol = overriddenMethod;
+                        break;
+                    default:
+                        yield break;
+                }
+                yield return memberSymbol;
             }
         }
     }
