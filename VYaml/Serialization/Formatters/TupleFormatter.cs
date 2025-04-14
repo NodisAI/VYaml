@@ -7,7 +7,7 @@ namespace VYaml.Serialization
 {
     public class TupleFormatter<T1> : IYamlFormatter<Tuple<T1>?>
     {
-        public void Serialize(ref Utf8YamlEmitter emitter, Tuple<T1>? value, YamlSerializationContext context)
+        public void Serialize(ref Utf8YamlEmitter emitter, in Tuple<T1>? value, YamlSerializationContext context)
         {
             if (value is null)
             {
@@ -36,7 +36,7 @@ namespace VYaml.Serialization
 
     public class TupleFormatter<T1, T2> : IYamlFormatter<Tuple<T1, T2>?>
     {
-        public void Serialize(ref Utf8YamlEmitter emitter, Tuple<T1, T2>? value, YamlSerializationContext context)
+        public void Serialize(ref Utf8YamlEmitter emitter, in Tuple<T1, T2>? value, YamlSerializationContext context)
         {
             if (value is null)
             {
@@ -67,7 +67,7 @@ namespace VYaml.Serialization
 
     public class TupleFormatter<T1, T2, T3> : IYamlFormatter<Tuple<T1, T2, T3>?>
     {
-        public void Serialize(ref Utf8YamlEmitter emitter, Tuple<T1, T2, T3>? value, YamlSerializationContext context)
+        public void Serialize(ref Utf8YamlEmitter emitter, in Tuple<T1, T2, T3>? value, YamlSerializationContext context)
         {
             if (value is null)
             {
@@ -100,7 +100,7 @@ namespace VYaml.Serialization
 
     public class TupleFormatter<T1, T2, T3, T4> : IYamlFormatter<Tuple<T1, T2, T3, T4>?>
     {
-        public void Serialize(ref Utf8YamlEmitter emitter, Tuple<T1, T2, T3, T4>? value, YamlSerializationContext context)
+        public void Serialize(ref Utf8YamlEmitter emitter, in Tuple<T1, T2, T3, T4>? value, YamlSerializationContext context)
         {
             if (value is null)
             {
@@ -136,7 +136,7 @@ namespace VYaml.Serialization
 
     public class TupleFormatter<T1, T2, T3, T4, T5> : IYamlFormatter<Tuple<T1, T2, T3, T4, T5>?>
     {
-        public void Serialize(ref Utf8YamlEmitter emitter, Tuple<T1, T2, T3, T4, T5>? value, YamlSerializationContext context)
+        public void Serialize(ref Utf8YamlEmitter emitter, in Tuple<T1, T2, T3, T4, T5>? value, YamlSerializationContext context)
         {
             if (value is null)
             {
@@ -174,7 +174,7 @@ namespace VYaml.Serialization
 
     public class TupleFormatter<T1, T2, T3, T4, T5, T6> : IYamlFormatter<Tuple<T1, T2, T3, T4, T5, T6>?>
     {
-        public void Serialize(ref Utf8YamlEmitter emitter, Tuple<T1, T2, T3, T4, T5, T6>? value, YamlSerializationContext context)
+        public void Serialize(ref Utf8YamlEmitter emitter, in Tuple<T1, T2, T3, T4, T5, T6>? value, YamlSerializationContext context)
         {
             if (value is null)
             {
@@ -213,7 +213,7 @@ namespace VYaml.Serialization
 
     public class TupleFormatter<T1, T2, T3, T4, T5, T6, T7> : IYamlFormatter<Tuple<T1, T2, T3, T4, T5, T6, T7>?>
     {
-        public void Serialize(ref Utf8YamlEmitter emitter, Tuple<T1, T2, T3, T4, T5, T6, T7>? value, YamlSerializationContext context)
+        public void Serialize(ref Utf8YamlEmitter emitter, in Tuple<T1, T2, T3, T4, T5, T6, T7>? value, YamlSerializationContext context)
         {
             if (value is null)
             {
@@ -255,7 +255,7 @@ namespace VYaml.Serialization
 
     public class TupleFormatter<T1, T2, T3, T4, T5, T6, T7, T8> : IYamlFormatter<Tuple<T1, T2, T3, T4, T5, T6, T7, T8>?> where T8 : notnull
     {
-        public void Serialize(ref Utf8YamlEmitter emitter, Tuple<T1, T2, T3, T4, T5, T6, T7, T8>? value, YamlSerializationContext context)
+        public void Serialize(ref Utf8YamlEmitter emitter, in Tuple<T1, T2, T3, T4, T5, T6, T7, T8>? value, YamlSerializationContext context)
         {
             if (value is null)
             {

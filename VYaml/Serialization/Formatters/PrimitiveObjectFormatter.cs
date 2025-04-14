@@ -30,7 +30,7 @@ namespace VYaml.Serialization
             { typeof(byte[]), 14 },
         };
 
-        public void Serialize(ref Utf8YamlEmitter emitter, object? value, YamlSerializationContext context)
+        public void Serialize(ref Utf8YamlEmitter emitter, in object? value, YamlSerializationContext context)
         {
             if (value is null)
             {

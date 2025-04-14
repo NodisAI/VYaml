@@ -11,7 +11,7 @@ namespace VYaml.Serialization
     {
         public static readonly DateTimeOffsetFormatter Instance = new();
 
-        public void Serialize(ref Utf8YamlEmitter emitter, DateTimeOffset value, YamlSerializationContext context)
+        public void Serialize(ref Utf8YamlEmitter emitter, in DateTimeOffset value, YamlSerializationContext context)
         {
             var buf = context.GetBuffer64();
             if (Utf8Formatter.TryFormat(value, buf, out var bytesWritten, new StandardFormat('O')))

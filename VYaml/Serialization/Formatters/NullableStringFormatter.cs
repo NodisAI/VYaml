@@ -8,7 +8,7 @@ namespace VYaml.Serialization
     {
         public static readonly NullableStringFormatter Instance = new();
 
-        public void Serialize(ref Utf8YamlEmitter emitter, string? value, YamlSerializationContext context)
+        public void Serialize(ref Utf8YamlEmitter emitter, in string? value, YamlSerializationContext context)
         {
             if (value == null)
             {

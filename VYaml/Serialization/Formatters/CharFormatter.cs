@@ -8,7 +8,7 @@ namespace VYaml.Serialization
     {
         public static readonly CharFormatter Instance = new();
 
-        public void Serialize(ref Utf8YamlEmitter emitter, char value, YamlSerializationContext context)
+        public void Serialize(ref Utf8YamlEmitter emitter, in char value, YamlSerializationContext context)
         {
             emitter.WriteInt32(value);
         }
@@ -25,7 +25,7 @@ namespace VYaml.Serialization
     {
         public static readonly NullableCharFormatter Instance = new();
 
-        public void Serialize(ref Utf8YamlEmitter emitter, char? value, YamlSerializationContext context)
+        public void Serialize(ref Utf8YamlEmitter emitter, in char? value, YamlSerializationContext context)
         {
             if (value.HasValue)
             {

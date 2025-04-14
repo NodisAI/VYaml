@@ -10,7 +10,7 @@ namespace VYaml.Serialization
 
     public interface IYamlFormatter<T> : IYamlFormatter
     {
-        void Serialize(ref Utf8YamlEmitter emitter, T value, YamlSerializationContext context);
+        void Serialize(ref Utf8YamlEmitter emitter, in T value, YamlSerializationContext context);
         T Deserialize(ref YamlParser parser, YamlDeserializationContext context);
     }
 }

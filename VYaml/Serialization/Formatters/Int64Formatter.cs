@@ -8,7 +8,7 @@ namespace VYaml.Serialization
     {
         public static readonly Int64Formatter Instance = new();
 
-        public void Serialize(ref Utf8YamlEmitter emitter, long value, YamlSerializationContext context)
+        public void Serialize(ref Utf8YamlEmitter emitter, in long value, YamlSerializationContext context)
         {
             emitter.WriteInt64(value);
         }
@@ -25,7 +25,7 @@ namespace VYaml.Serialization
     {
         public static readonly NullableInt64Formatter Instance = new();
 
-        public void Serialize(ref Utf8YamlEmitter emitter, long? value, YamlSerializationContext context)
+        public void Serialize(ref Utf8YamlEmitter emitter, in long? value, YamlSerializationContext context)
         {
             if (value.HasValue)
             {

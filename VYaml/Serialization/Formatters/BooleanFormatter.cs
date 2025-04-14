@@ -8,7 +8,7 @@ namespace VYaml.Serialization
     {
         public static readonly BooleanFormatter Instance = new();
 
-        public void Serialize(ref Utf8YamlEmitter emitter, bool value, YamlSerializationContext context)
+        public void Serialize(ref Utf8YamlEmitter emitter, in bool value, YamlSerializationContext context)
         {
             emitter.WriteBool(value);
         }
@@ -25,7 +25,7 @@ namespace VYaml.Serialization
     {
         public static readonly NullableBooleanFormatter Instance = new();
 
-        public void Serialize(ref Utf8YamlEmitter emitter, bool? value, YamlSerializationContext context)
+        public void Serialize(ref Utf8YamlEmitter emitter, in bool? value, YamlSerializationContext context)
         {
             if (value.HasValue)
             {

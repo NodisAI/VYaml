@@ -9,7 +9,7 @@ namespace VYaml.Serialization
     {
         public static readonly BigIntegerFormatter Instance = new();
 
-        public void Serialize(ref Utf8YamlEmitter emitter, BigInteger value, YamlSerializationContext context)
+        public void Serialize(ref Utf8YamlEmitter emitter, in BigInteger value, YamlSerializationContext context)
         {
             emitter.WriteString(value.ToString());
         }
@@ -30,7 +30,7 @@ namespace VYaml.Serialization
     {
         public static readonly ComplexFormatter Instance = new();
 
-        public void Serialize(ref Utf8YamlEmitter emitter, Complex value, YamlSerializationContext context)
+        public void Serialize(ref Utf8YamlEmitter emitter, in Complex value, YamlSerializationContext context)
         {
             emitter.WriteString($"{value.Real}+{value.Imaginary}i");
         }

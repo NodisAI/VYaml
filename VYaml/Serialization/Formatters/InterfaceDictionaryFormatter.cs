@@ -7,7 +7,7 @@ namespace VYaml.Serialization
 {
     public class InterfaceDictionaryFormatter<TKey, TValue> : IYamlFormatter<IDictionary<TKey, TValue>?> where TKey : notnull
     {
-        public void Serialize(ref Utf8YamlEmitter emitter, IDictionary<TKey, TValue>? value, YamlSerializationContext context)
+        public void Serialize(ref Utf8YamlEmitter emitter, in IDictionary<TKey, TValue>? value, YamlSerializationContext context)
         {
             if (value is null)
             {

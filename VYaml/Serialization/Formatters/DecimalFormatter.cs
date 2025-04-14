@@ -9,7 +9,7 @@ namespace VYaml.Serialization
     {
         public static readonly DecimalFormatter Instance = new();
 
-        public void Serialize(ref Utf8YamlEmitter emitter, decimal value, YamlSerializationContext context)
+        public void Serialize(ref Utf8YamlEmitter emitter, in decimal value, YamlSerializationContext context)
         {
             var buf = context.GetBuffer64();
             if (Utf8Formatter.TryFormat(value, buf, out var bytesWritten))

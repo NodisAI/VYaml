@@ -8,7 +8,7 @@ namespace VYaml.Serialization
         : IYamlFormatter<TCollection?>
         where TCollection : IEnumerable<TElement>
     {
-        public void Serialize(ref Utf8YamlEmitter emitter, TCollection? value, YamlSerializationContext context)
+        public void Serialize(ref Utf8YamlEmitter emitter, in TCollection? value, YamlSerializationContext context)
         {
             if (value is null)
             {

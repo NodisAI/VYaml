@@ -10,7 +10,7 @@ namespace VYaml.Serialization
     {
         public static readonly GuidFormatter Instance = new();
 
-        public void Serialize(ref Utf8YamlEmitter emitter, Guid value, YamlSerializationContext context)
+        public void Serialize(ref Utf8YamlEmitter emitter, in Guid value, YamlSerializationContext context)
         {
             // nnnnnnnn-nnnn-nnnn-nnnn-nnnnnnnnnnnn
             var buf = context.GetBuffer64();

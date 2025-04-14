@@ -6,7 +6,7 @@ namespace VYaml.Serialization
 {
     public sealed class TwoDimensionalArrayFormatter<T> : IYamlFormatter<T[,]?>
     {
-        public void Serialize(ref Utf8YamlEmitter emitter, T[,]? value, YamlSerializationContext context)
+        public void Serialize(ref Utf8YamlEmitter emitter, in T[,]? value, YamlSerializationContext context)
         {
             if (value == null)
             {
@@ -68,7 +68,7 @@ namespace VYaml.Serialization
 
     public sealed class ThreeDimensionalArrayFormatter<T> : IYamlFormatter<T[,,]?>
     {
-        public void Serialize(ref Utf8YamlEmitter emitter, T[,,]? value, YamlSerializationContext context)
+        public void Serialize(ref Utf8YamlEmitter emitter, in T[,,]? value, YamlSerializationContext context)
         {
             if (value == null)
             {
@@ -152,7 +152,7 @@ namespace VYaml.Serialization
 
     public sealed class FourDimensionalArrayFormatter<T> : IYamlFormatter<T[,,,]?>
     {
-        public void Serialize(ref Utf8YamlEmitter emitter, T[,,,]? value, YamlSerializationContext context)
+        public void Serialize(ref Utf8YamlEmitter emitter, in T[,,,]? value, YamlSerializationContext context)
         {
             if (value == null)
             {

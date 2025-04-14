@@ -1,6 +1,5 @@
 #nullable enable
 using System;
-using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
 
@@ -13,8 +12,6 @@ namespace VYaml.Serialization
 
     public static class YamlFormatterResolverExtensions
     {
-        static readonly Dictionary<Type, Func<IYamlFormatterResolver, IYamlFormatter>> FormatterGetters = new();
-
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static IYamlFormatter<T> GetFormatterWithVerify<T>(this IYamlFormatterResolver resolver)
         {
@@ -29,20 +26,15 @@ namespace VYaml.Serialization
                 // Rethrow the inner exception if there is one.
                 // Do it carefully so as to not stomp on the original callstack.
                 ExceptionDispatchInfo.Capture(ex.InnerException ?? ex).Throw();
-                return default!; // not reachable
+                throw;
             }
 
             if (formatter != null)
             {
                 return formatter;
             }
-            Throw(typeof(T), resolver);
-            return default!; // not reachable
-        }
 
-        static void Throw(Type t, IYamlFormatterResolver resolver)
-        {
-            throw new YamlSerializerException(t.FullName + $"{t} is not registered in resolver: {resolver.GetType()}");
+            throw new YamlSerializerException($"{typeof(T)} is not registered in resolver: {resolver.GetType()}");
         }
     }
 }

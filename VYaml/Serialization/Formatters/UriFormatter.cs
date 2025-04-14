@@ -9,7 +9,7 @@ namespace VYaml.Serialization
     {
         public static readonly UriFormatter Instance = new();
 
-        public void Serialize(ref Utf8YamlEmitter emitter, Uri value, YamlSerializationContext context)
+        public void Serialize(ref Utf8YamlEmitter emitter, in Uri value, YamlSerializationContext context)
         {
             emitter.WriteString(value.ToString());
         }

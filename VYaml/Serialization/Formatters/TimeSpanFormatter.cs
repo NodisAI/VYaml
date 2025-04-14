@@ -10,7 +10,7 @@ namespace VYaml.Serialization
     {
         public static readonly TimeSpanFormatter Instance = new();
 
-        public void Serialize(ref Utf8YamlEmitter emitter, TimeSpan value, YamlSerializationContext context)
+        public void Serialize(ref Utf8YamlEmitter emitter, in TimeSpan value, YamlSerializationContext context)
         {
             var buf = context.GetBuffer64();
             if (Utf8Formatter.TryFormat(value, buf, out var bytesWritten))

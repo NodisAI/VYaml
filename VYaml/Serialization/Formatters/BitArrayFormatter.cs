@@ -10,7 +10,7 @@ namespace VYaml.Serialization
     {
         public static readonly BitArrayFormatter Instance = new();
 
-        public void Serialize(ref Utf8YamlEmitter emitter, BitArray? value, YamlSerializationContext context)
+        public void Serialize(ref Utf8YamlEmitter emitter, in BitArray? value, YamlSerializationContext context)
         {
             if (value is null)
             {

@@ -109,7 +109,7 @@ namespace VYaml.Serialization
             }
         }
 
-        public void Serialize(ref Utf8YamlEmitter emitter, T value, YamlSerializationContext context)
+        public void Serialize(ref Utf8YamlEmitter emitter, in T value, YamlSerializationContext context)
         {
             if (!StringValues.TryGetValue(value, out var t))
             {

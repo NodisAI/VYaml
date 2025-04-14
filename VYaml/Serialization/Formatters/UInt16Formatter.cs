@@ -8,7 +8,7 @@ namespace VYaml.Serialization
     {
         public static readonly UInt16Formatter Instance = new();
 
-        public void Serialize(ref Utf8YamlEmitter emitter, ushort value, YamlSerializationContext context)
+        public void Serialize(ref Utf8YamlEmitter emitter, in ushort value, YamlSerializationContext context)
         {
             emitter.WriteUInt32(value);
         }
@@ -25,7 +25,7 @@ namespace VYaml.Serialization
     {
         public static readonly NullableUInt16Formatter Instance = new();
 
-        public void Serialize(ref Utf8YamlEmitter emitter, ushort? value, YamlSerializationContext context)
+        public void Serialize(ref Utf8YamlEmitter emitter, in ushort? value, YamlSerializationContext context)
         {
             if (value.HasValue)
             {

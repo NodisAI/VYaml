@@ -8,7 +8,7 @@ namespace VYaml.Serialization
     {
         public static readonly VersionFormatter Instance = new();
 
-        public void Serialize(ref Utf8YamlEmitter emitter, Version? value, YamlSerializationContext context)
+        public void Serialize(ref Utf8YamlEmitter emitter, in Version? value, YamlSerializationContext context)
         {
             if (value is null)
             {

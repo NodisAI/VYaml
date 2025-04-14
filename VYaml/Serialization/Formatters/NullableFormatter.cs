@@ -6,7 +6,7 @@ namespace VYaml.Serialization
 {
     public class NullableFormatter<T> : IYamlFormatter<T?> where T : struct
     {
-        public void Serialize(ref Utf8YamlEmitter emitter, T? value, YamlSerializationContext context)
+        public void Serialize(ref Utf8YamlEmitter emitter, in T? value, YamlSerializationContext context)
         {
             if (value is null)
             {
@@ -40,7 +40,7 @@ namespace VYaml.Serialization
             this.underlyingFormatter = underlyingFormatter;
         }
 
-        public void Serialize(ref Utf8YamlEmitter emitter, T? value, YamlSerializationContext context)
+        public void Serialize(ref Utf8YamlEmitter emitter, in T? value, YamlSerializationContext context)
         {
             if (value.HasValue)
             {

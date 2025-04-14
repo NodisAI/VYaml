@@ -6,7 +6,7 @@ namespace VYaml.Serialization
 {
     public class ArrayFormatter<T> : IYamlFormatter<T[]?>
     {
-        public void Serialize(ref Utf8YamlEmitter emitter, T[]? value, YamlSerializationContext context)
+        public void Serialize(ref Utf8YamlEmitter emitter, in T[]? value, YamlSerializationContext context)
         {
             if (value is null)
             {

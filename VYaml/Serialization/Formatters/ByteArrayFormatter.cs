@@ -10,7 +10,7 @@ namespace VYaml.Serialization
     {
         public static readonly IYamlFormatter<byte[]?> Instance = new ByteArrayFormatter();
 
-        public void Serialize(ref Utf8YamlEmitter emitter, byte[]? value, YamlSerializationContext context)
+        public void Serialize(ref Utf8YamlEmitter emitter, in byte[]? value, YamlSerializationContext context)
         {
             if (value == null)
             {
@@ -40,7 +40,7 @@ namespace VYaml.Serialization
     {
         public static readonly ByteMemoryFormatter Instance = new();
 
-        public void Serialize(ref Utf8YamlEmitter emitter, Memory<byte> value, YamlSerializationContext context)
+        public void Serialize(ref Utf8YamlEmitter emitter, in Memory<byte> value, YamlSerializationContext context)
         {
             emitter.WriteString(
                 Convert.ToBase64String(value.Span, Base64FormattingOptions.None),
@@ -58,7 +58,7 @@ namespace VYaml.Serialization
     {
         public static readonly ByteReadOnlyMemoryFormatter Instance = new();
 
-        public void Serialize(ref Utf8YamlEmitter emitter, ReadOnlyMemory<byte> value, YamlSerializationContext context)
+        public void Serialize(ref Utf8YamlEmitter emitter, in ReadOnlyMemory<byte> value, YamlSerializationContext context)
         {
             emitter.WriteString(
                 Convert.ToBase64String(value.Span, Base64FormattingOptions.None),
@@ -76,7 +76,7 @@ namespace VYaml.Serialization
     {
         public static readonly ByteReadOnlySequenceFormatter Instance = new();
 
-        public void Serialize(ref Utf8YamlEmitter emitter, ReadOnlySequence<byte> value, YamlSerializationContext context)
+        public void Serialize(ref Utf8YamlEmitter emitter, in ReadOnlySequence<byte> value, YamlSerializationContext context)
         {
             var builder = new StringBuilder((int)value.Length);
             foreach (var segment in value)
@@ -98,7 +98,7 @@ namespace VYaml.Serialization
     {
         public static readonly ByteArraySegmentFormatter Instance = new();
 
-        public void Serialize(ref Utf8YamlEmitter emitter, ArraySegment<byte> value, YamlSerializationContext context)
+        public void Serialize(ref Utf8YamlEmitter emitter, in ArraySegment<byte> value, YamlSerializationContext context)
         {
             emitter.WriteString(
                 Convert.ToBase64String(value, Base64FormattingOptions.None),

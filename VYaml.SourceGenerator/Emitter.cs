@@ -261,7 +261,7 @@ static class Emitter
 
         codeWriter.AppendLine("[VYaml.Annotations.Preserve]");
         using var methodScope = codeWriter.BeginBlockScope(
-            $"public void Serialize(ref Utf8YamlEmitter emitter, {returnType} value, YamlSerializationContext context)");
+            $"public void Serialize(ref Utf8YamlEmitter emitter, in {returnType} value, YamlSerializationContext context)");
 
         if (!typeMeta.Symbol.IsValueType)
         {
@@ -306,7 +306,7 @@ static class Emitter
 
         codeWriter.AppendLine("[VYaml.Annotations.Preserve]");
         using var methodScope = codeWriter.BeginBlockScope(
-            $"public void Serialize(ref Utf8YamlEmitter emitter, {returnType} value, YamlSerializationContext context)");
+            $"public void Serialize(ref Utf8YamlEmitter emitter, in {returnType} value, YamlSerializationContext context)");
 
         if (!typeMeta.Symbol.IsValueType)
         {

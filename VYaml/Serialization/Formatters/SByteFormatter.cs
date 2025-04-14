@@ -8,7 +8,7 @@ namespace VYaml.Serialization
     {
         public static readonly SByteFormatter Instance = new();
 
-        public void Serialize(ref Utf8YamlEmitter emitter, sbyte value, YamlSerializationContext context)
+        public void Serialize(ref Utf8YamlEmitter emitter, in sbyte value, YamlSerializationContext context)
         {
             emitter.WriteInt32(value);
         }
@@ -25,7 +25,7 @@ namespace VYaml.Serialization
     {
         public static readonly NullableSByteFormatter Instance = new();
 
-        public void Serialize(ref Utf8YamlEmitter emitter, sbyte? value, YamlSerializationContext context)
+        public void Serialize(ref Utf8YamlEmitter emitter, in sbyte? value, YamlSerializationContext context)
         {
             if (value.HasValue)
             {

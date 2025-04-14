@@ -8,7 +8,7 @@ namespace VYaml.Serialization
     {
         public static readonly TypeFormatter Instance = new();
 
-        public void Serialize(ref Utf8YamlEmitter emitter, Type? value, YamlSerializationContext context)
+        public void Serialize(ref Utf8YamlEmitter emitter, in Type? value, YamlSerializationContext context)
         {
             if (value is null)
             {

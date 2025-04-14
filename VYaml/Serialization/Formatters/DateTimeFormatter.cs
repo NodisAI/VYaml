@@ -12,7 +12,7 @@ namespace VYaml.Serialization
     {
         public static readonly DateTimeFormatter Instance = new();
 
-        public void Serialize(ref Utf8YamlEmitter emitter, DateTime value, YamlSerializationContext context)
+        public void Serialize(ref Utf8YamlEmitter emitter, in DateTime value, YamlSerializationContext context)
         {
             // 2017-06-12T12:30:45.1234578+00:00
             // Span<byte> buf = stackalloc byte[29];
@@ -51,7 +51,7 @@ namespace VYaml.Serialization
     {
         public static readonly NullableDateTimeFormatter Instance = new();
 
-        public void Serialize(ref Utf8YamlEmitter emitter, DateTime? value, YamlSerializationContext context)
+        public void Serialize(ref Utf8YamlEmitter emitter, in DateTime? value, YamlSerializationContext context)
         {
             if (value.HasValue)
             {

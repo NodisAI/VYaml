@@ -8,7 +8,7 @@ namespace VYaml.Serialization
     {
         public static readonly UInt64Formatter Instance = new();
 
-        public void Serialize(ref Utf8YamlEmitter emitter, ulong value, YamlSerializationContext context)
+        public void Serialize(ref Utf8YamlEmitter emitter, in ulong value, YamlSerializationContext context)
         {
             emitter.WriteUInt64(value);
         }
@@ -25,7 +25,7 @@ namespace VYaml.Serialization
     {
         public static readonly NullableUInt64Formatter Instance = new();
 
-        public void Serialize(ref Utf8YamlEmitter emitter, ulong? value, YamlSerializationContext context)
+        public void Serialize(ref Utf8YamlEmitter emitter, in ulong? value, YamlSerializationContext context)
         {
             if (value.HasValue)
             {
