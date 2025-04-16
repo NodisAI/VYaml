@@ -23,20 +23,22 @@ static class Emitter
             // verify is partial
             if (!typeMeta.IsPartial())
             {
-                context.ReportDiagnostic(Diagnostic.Create(
-                    DiagnosticDescriptors.MustBePartial,
-                    typeMeta.Syntax.Identifier.GetLocation(),
-                    typeMeta.Symbol.Name));
+                context.ReportDiagnostic(
+                    Diagnostic.Create(
+                        DiagnosticDescriptors.MustBePartial,
+                        typeMeta.Syntax.Identifier.GetLocation(),
+                        typeMeta.Symbol.Name));
                 error = true;
             }
 
             // nested is not allowed
             if (typeMeta.IsNested())
             {
-                context.ReportDiagnostic(Diagnostic.Create(
-                    DiagnosticDescriptors.NestedNotAllow,
-                    typeMeta.Syntax.Identifier.GetLocation(),
-                    typeMeta.Symbol.Name));
+                context.ReportDiagnostic(
+                    Diagnostic.Create(
+                        DiagnosticDescriptors.NestedNotAllow,
+                        typeMeta.Syntax.Identifier.GetLocation(),
+                        typeMeta.Symbol.Name));
                 error = true;
             }
 
@@ -45,10 +47,11 @@ static class Emitter
             {
                 if (!typeMeta.IsUnion)
                 {
-                    context.ReportDiagnostic(Diagnostic.Create(
-                        DiagnosticDescriptors.AbstractMustUnion,
-                        typeMeta.Syntax.Identifier.GetLocation(),
-                        typeMeta.TypeName));
+                    context.ReportDiagnostic(
+                        Diagnostic.Create(
+                            DiagnosticDescriptors.AbstractMustUnion,
+                            typeMeta.Syntax.Identifier.GetLocation(),
+                            typeMeta.TypeName));
                     error = true;
                 }
             }
@@ -58,10 +61,11 @@ static class Emitter
             {
                 if (!typeMeta.Symbol.IsAbstract)
                 {
-                    context.ReportDiagnostic(Diagnostic.Create(
-                        DiagnosticDescriptors.ConcreteTypeCantBeUnion,
-                        typeMeta.Syntax.Identifier.GetLocation(),
-                        typeMeta.TypeName));
+                    context.ReportDiagnostic(
+                        Diagnostic.Create(
+                            DiagnosticDescriptors.ConcreteTypeCantBeUnion,
+                            typeMeta.Syntax.Identifier.GetLocation(),
+                            typeMeta.TypeName));
                     error = true;
                 }
 
@@ -70,10 +74,11 @@ static class Emitter
                 {
                     if (tagGroup.Count() > 1)
                     {
-                        context.ReportDiagnostic(Diagnostic.Create(
-                            DiagnosticDescriptors.UnionTagDuplicate,
-                            typeMeta.Syntax.Identifier.GetLocation(),
-                            tagGroup.Key));
+                        context.ReportDiagnostic(
+                            Diagnostic.Create(
+                                DiagnosticDescriptors.UnionTagDuplicate,
+                                typeMeta.Syntax.Identifier.GetLocation(),
+                                tagGroup.Key));
                         error = true;
                     }
                 }
@@ -84,17 +89,18 @@ static class Emitter
                     foreach (var unionMeta in typeMeta.UnionMetas)
                     {
                         // interface, check interfaces.
-                        var check = unionMeta.SubTypeSymbol.IsGenericType
-                            ? unionMeta.SubTypeSymbol.OriginalDefinition.AllInterfaces.Any(x => x.EqualsUnconstructedGenericType(typeMeta.Symbol))
-                            : unionMeta.SubTypeSymbol.AllInterfaces.Any(x => SymbolEqualityComparer.Default.Equals(x, typeMeta.Symbol));
+                        var check = unionMeta.SubTypeSymbol.IsGenericType ?
+                            unionMeta.SubTypeSymbol.OriginalDefinition.AllInterfaces.Any(x => x.EqualsUnconstructedGenericType(typeMeta.Symbol)) :
+                            unionMeta.SubTypeSymbol.AllInterfaces.Any(x => SymbolEqualityComparer.Default.Equals(x, typeMeta.Symbol));
 
                         if (!check)
                         {
-                            context.ReportDiagnostic(Diagnostic.Create(
-                                DiagnosticDescriptors.UnionMemberTypeNotImplementBaseType,
-                                typeMeta.Syntax.Identifier.GetLocation(),
-                                typeMeta.TypeName,
-                                unionMeta.SubTypeSymbol.Name));
+                            context.ReportDiagnostic(
+                                Diagnostic.Create(
+                                    DiagnosticDescriptors.UnionMemberTypeNotImplementBaseType,
+                                    typeMeta.Syntax.Identifier.GetLocation(),
+                                    typeMeta.TypeName,
+                                    unionMeta.SubTypeSymbol.Name));
                             error = true;
                         }
                     }
@@ -105,17 +111,18 @@ static class Emitter
                     foreach (var unionMeta in typeMeta.UnionMetas)
                     {
                         // abstract type, check base.
-                        var check = unionMeta.SubTypeSymbol.IsGenericType
-                            ? unionMeta.SubTypeSymbol.OriginalDefinition.GetAllBaseTypes().Any(x => x.EqualsUnconstructedGenericType(typeMeta.Symbol))
-                            : unionMeta.SubTypeSymbol.GetAllBaseTypes().Any(x => SymbolEqualityComparer.Default.Equals(x, typeMeta.Symbol));
+                        var check = unionMeta.SubTypeSymbol.IsGenericType ?
+                            unionMeta.SubTypeSymbol.OriginalDefinition.GetAllBaseTypes().Any(x => x.EqualsUnconstructedGenericType(typeMeta.Symbol)) :
+                            unionMeta.SubTypeSymbol.GetAllBaseTypes().Any(x => SymbolEqualityComparer.Default.Equals(x, typeMeta.Symbol));
 
                         if (!check)
                         {
-                            context.ReportDiagnostic(Diagnostic.Create(
-                                DiagnosticDescriptors.UnionMemberTypeNotDerivedBaseType,
-                                typeMeta.Syntax.Identifier.GetLocation(),
-                                typeMeta.TypeName,
-                                unionMeta.SubTypeSymbol.Name));
+                            context.ReportDiagnostic(
+                                Diagnostic.Create(
+                                    DiagnosticDescriptors.UnionMemberTypeNotDerivedBaseType,
+                                    typeMeta.Syntax.Identifier.GetLocation(),
+                                    typeMeta.TypeName,
+                                    unionMeta.SubTypeSymbol.Name));
                             error = true;
                         }
                     }
@@ -162,15 +169,14 @@ static class Emitter
             };
             if (typeMeta.IsUnion)
             {
-                typeDeclarationKeyword = typeMeta.Symbol.IsRecord
-                    ? "record"
+                typeDeclarationKeyword = typeMeta.Symbol.IsRecord ? "record"
                     : typeMeta.Symbol.TypeKind == TypeKind.Interface ? "interface" : "class";
             }
 
             using (codeWriter.BeginBlockScope($"partial {typeDeclarationKeyword} {typeMeta.TypeName}"))
             {
                 // EmitCCtor(typeMeta, codeWriter, in context);
-                if (!TryEmitRegisterMethod(typeMeta, codeWriter, in context))
+                if (!TryEmitRegisterMethod(typeMeta, codeWriter))
                 {
                     return false;
                 }
@@ -197,46 +203,45 @@ static class Emitter
         }
         catch (Exception ex)
         {
-            context.ReportDiagnostic(Diagnostic.Create(
-                DiagnosticDescriptors.UnexpectedErrorDescriptor,
-                Location.None,
-                ex.ToString()));
+            context.ReportDiagnostic(
+                Diagnostic.Create(
+                    DiagnosticDescriptors.UnexpectedErrorDescriptor,
+                    Location.None,
+                    ex.ToString()));
             return false;
         }
     }
 
-    static void EmitCCtor(TypeMeta typeMeta, CodeWriter codeWriter)
-    {
-        using var _ = codeWriter.BeginBlockScope($"static {typeMeta.TypeName}()");
-        codeWriter.AppendLine($"__RegisterVYamlFormatter();");
-    }
+    // static void EmitCCtor(TypeMeta typeMeta, CodeWriter codeWriter)
+    // {
+    //     using var _ = codeWriter.BeginBlockScope($"static {typeMeta.TypeName}()");
+    //     codeWriter.AppendLine($"__RegisterVYamlFormatter();");
+    // }
 
-    static bool TryEmitRegisterMethod(TypeMeta typeMeta, CodeWriter codeWriter, in SourceProductionContext context)
+    private static bool TryEmitRegisterMethod(TypeMeta typeMeta, CodeWriter codeWriter)
     {
         codeWriter.AppendLine("[VYaml.Annotations.Preserve]");
         using var _ = codeWriter.BeginBlockScope("public static void __RegisterVYamlFormatter()");
-        codeWriter.AppendLine($"global::VYaml.Serialization.GeneratedResolver.Register(new {typeMeta.TypeName}GeneratedFormatter());");
+        codeWriter.AppendLine($"global::VYaml.Serialization.GeneratedResolver.Register(new {typeMeta.TypeNameWithoutGenerics}GeneratedFormatter());");
         return true;
     }
 
-    static bool TryEmitFormatter(
+    private static bool TryEmitFormatter(
         TypeMeta typeMeta,
         CodeWriter codeWriter,
         ReferenceSymbols references,
         in SourceProductionContext context)
     {
-        var returnType = typeMeta.Symbol.IsValueType
-            ? typeMeta.FullTypeName
-            : $"{typeMeta.FullTypeName}?";
+        var returnType = typeMeta.Symbol.IsValueType ? typeMeta.FullTypeName : $"{typeMeta.FullTypeName}?";
 
         codeWriter.AppendLine("[VYaml.Annotations.Preserve]");
-        using var _ = codeWriter.BeginBlockScope($"public class {typeMeta.TypeName}GeneratedFormatter : IYamlFormatter<{returnType}>");
+        using var _ = codeWriter.BeginBlockScope($"public class {typeMeta.TypeNameWithoutGenerics}GeneratedFormatter : IYamlFormatter<{returnType}>");
 
         // Union
         if (typeMeta.IsUnion)
         {
-            return TryEmitSerializeMethodUnion(typeMeta, codeWriter, in context) &&
-                   TryEmitDeserializeMethodUnion(typeMeta, codeWriter, in context);
+            return TryEmitSerializeMethodUnion(typeMeta, codeWriter) &&
+                TryEmitDeserializeMethodUnion(typeMeta, codeWriter);
         }
 
         // Default
@@ -248,16 +253,14 @@ static class Emitter
             codeWriter.AppendLine();
         }
 
-        return TryEmitSerializeMethod(typeMeta, codeWriter, in context) &&
-               TryEmitDeserializeMethod(typeMeta, codeWriter, references, in context);
+        return TryEmitSerializeMethod(typeMeta, codeWriter) &&
+            TryEmitDeserializeMethod(typeMeta, codeWriter, references, in context);
     }
 
-    static bool TryEmitSerializeMethod(TypeMeta typeMeta, CodeWriter codeWriter, in SourceProductionContext context)
+    private static bool TryEmitSerializeMethod(TypeMeta typeMeta, CodeWriter codeWriter)
     {
         var memberMetas = typeMeta.MemberMetas;
-        var returnType = typeMeta.Symbol.IsValueType
-            ? typeMeta.FullTypeName
-            : $"{typeMeta.FullTypeName}?";
+        var returnType = typeMeta.Symbol.IsValueType ? typeMeta.FullTypeName : $"{typeMeta.FullTypeName}?";
 
         codeWriter.AppendLine("[VYaml.Annotations.Preserve]");
         using var methodScope = codeWriter.BeginBlockScope(
@@ -281,13 +284,15 @@ static class Emitter
             }
             else
             {
-                using (codeWriter.BeginBlockScope($"if (context.Options.NamingConvention == global::VYaml.Annotations.NamingConvention.{memberMeta.NamingConventionByType})"))
+                using (codeWriter.BeginBlockScope(
+                           $"if (context.Options.NamingConvention == global::VYaml.Annotations.NamingConvention.{memberMeta.NamingConventionByType})"))
                 {
                     codeWriter.AppendLine($"emitter.WriteScalar({memberMeta.Name}KeyUtf8Bytes);");
                 }
                 using (codeWriter.BeginBlockScope("else"))
                 {
-                    codeWriter.AppendLine($"global::VYaml.Serialization.NamingConventionMutator.MutateToThreadStaticBufferUtf8({memberMeta.Name}KeyUtf8Bytes, context.Options.NamingConvention, out var mutated, out var written);");
+                    codeWriter.AppendLine(
+                        $"global::VYaml.Serialization.NamingConventionMutator.MutateToThreadStaticBufferUtf8({memberMeta.Name}KeyUtf8Bytes, context.Options.NamingConvention, out var mutated, out var written);");
                     codeWriter.AppendLine("emitter.WriteScalar(mutated.AsSpan(0, written));");
                 }
             }
@@ -298,11 +303,9 @@ static class Emitter
         return true;
     }
 
-    static bool TryEmitSerializeMethodUnion(TypeMeta typeMeta, CodeWriter codeWriter, in SourceProductionContext context)
+    static bool TryEmitSerializeMethodUnion(TypeMeta typeMeta, CodeWriter codeWriter)
     {
-        var returnType = typeMeta.Symbol.IsValueType
-            ? typeMeta.FullTypeName
-            : $"{typeMeta.FullTypeName}?";
+        var returnType = typeMeta.Symbol.IsValueType ? typeMeta.FullTypeName : $"{typeMeta.FullTypeName}?";
 
         codeWriter.AppendLine("[VYaml.Annotations.Preserve]");
         using var methodScope = codeWriter.BeginBlockScope(
@@ -324,7 +327,7 @@ static class Emitter
                 codeWriter.AppendLine($"case {unionMeta.FullTypeName} x:");
                 codeWriter.AppendLine($"    emitter.Tag(\"{unionMeta.SubTypeTag}\");");
                 codeWriter.AppendLine($"    context.Serialize(ref emitter, x);");
-                codeWriter.AppendLine( "    break;");
+                codeWriter.AppendLine("    break;");
             }
         }
         return true;
@@ -336,7 +339,10 @@ static class Emitter
         ReferenceSymbols references,
         in SourceProductionContext context)
     {
-        if (!TryGetConstructor(typeMeta, references, in context,
+        if (!TryGetConstructor(
+                typeMeta,
+                references,
+                in context,
                 out var selectedConstructor,
                 out var constructedMembers))
         {
@@ -344,10 +350,11 @@ static class Emitter
         }
 
         var setterMembers = typeMeta.MemberMetas
-            .Where(x =>
-            {
-                return constructedMembers.All(constructedMember => !SymbolEqualityComparer.Default.Equals(x.Symbol, constructedMember.Symbol));
-            })
+            .Where(
+                x =>
+                {
+                    return constructedMembers.All(constructedMember => !SymbolEqualityComparer.Default.Equals(x.Symbol, constructedMember.Symbol));
+                })
             .ToList();
 
         foreach (var setterMember in setterMembers)
@@ -356,26 +363,26 @@ static class Emitter
             {
                 case { IsProperty: true, IsSettable: false }:
                 {
-                    context.ReportDiagnostic(Diagnostic.Create(
-                        DiagnosticDescriptors.YamlMemberPropertyMustHaveSetter,
-                        setterMember.GetLocation(typeMeta.Syntax),
-                        typeMeta.TypeName,
-                        setterMember.Name));
+                    context.ReportDiagnostic(
+                        Diagnostic.Create(
+                            DiagnosticDescriptors.YamlMemberPropertyMustHaveSetter,
+                            setterMember.GetLocation(typeMeta.Syntax),
+                            typeMeta.TypeName,
+                            setterMember.Name));
                     return false;
                 }
                 case { IsField: true, IsSettable: false }:
-                    context.ReportDiagnostic(Diagnostic.Create(
-                        DiagnosticDescriptors.YamlMemberFieldCannotBeReadonly,
-                        setterMember.GetLocation(typeMeta.Syntax),
-                        typeMeta.TypeName,
-                        setterMember.Name));
+                    context.ReportDiagnostic(
+                        Diagnostic.Create(
+                            DiagnosticDescriptors.YamlMemberFieldCannotBeReadonly,
+                            setterMember.GetLocation(typeMeta.Syntax),
+                            typeMeta.TypeName,
+                            setterMember.Name));
                     return false;
             }
         }
 
-        var returnType = typeMeta.Symbol.IsValueType
-            ? typeMeta.FullTypeName
-            : $"{typeMeta.FullTypeName}?";
+        var returnType = typeMeta.Symbol.IsValueType ? typeMeta.FullTypeName : $"{typeMeta.FullTypeName}?";
         codeWriter.AppendLine("[VYaml.Annotations.Preserve]");
         using var methodScope = codeWriter.BeginBlockScope(
             $"public {returnType} Deserialize(ref YamlParser parser, YamlDeserializationContext context)");
@@ -404,18 +411,22 @@ static class Emitter
         {
             using (codeWriter.BeginBlockScope("if (parser.CurrentEventType != ParseEventType.Scalar)"))
             {
-                codeWriter.AppendLine("throw new YamlSerializerException(parser.CurrentMark, \"Custom type deserialization supports only string key\");");
+                codeWriter.AppendLine(
+                    "throw new YamlSerializerException(parser.CurrentMark, \"Custom type deserialization supports only string key\");");
             }
             codeWriter.AppendLine();
             using (codeWriter.BeginBlockScope("if (!parser.TryGetScalarAsSpan(out var key))"))
             {
-                codeWriter.AppendLine("throw new YamlSerializerException(parser.CurrentMark, \"Custom type deserialization supports only string key\");");
+                codeWriter.AppendLine(
+                    "throw new YamlSerializerException(parser.CurrentMark, \"Custom type deserialization supports only string key\");");
             }
             codeWriter.AppendLine();
 
-            using (codeWriter.BeginBlockScope($"if (context.Options.NamingConvention != global::VYaml.Annotations.NamingConvention.{typeMeta.NamingConventionByType})"))
+            using (codeWriter.BeginBlockScope(
+                       $"if (context.Options.NamingConvention != global::VYaml.Annotations.NamingConvention.{typeMeta.NamingConventionByType})"))
             {
-                codeWriter.AppendLine($"global::VYaml.Serialization.NamingConventionMutator.MutateToThreadStaticBufferUtf8(key, global::VYaml.Annotations.NamingConvention.{typeMeta.NamingConventionByType}, out var mutated, out var written);");
+                codeWriter.AppendLine(
+                    $"global::VYaml.Serialization.NamingConventionMutator.MutateToThreadStaticBufferUtf8(key, global::VYaml.Annotations.NamingConvention.{typeMeta.NamingConventionByType}, out var mutated, out var written);");
                 codeWriter.AppendLine("key = mutated.AsSpan(0, written);");
             }
 
@@ -432,7 +443,8 @@ static class Emitter
                             using (codeWriter.BeginBlockScope($"{branching} (key.SequenceEqual({memberMeta.Name}KeyUtf8Bytes))"))
                             {
                                 codeWriter.AppendLine("parser.Read(); // skip key");
-                                codeWriter.AppendLine($"__{memberMeta.Name}__ = context.DeserializeWithAlias<{memberMeta.FullTypeName}>(ref parser);");
+                                codeWriter.AppendLine(
+                                    $"__{memberMeta.Name}__ = context.DeserializeWithAlias<{memberMeta.FullTypeName}>(ref parser);");
                                 codeWriter.AppendLine("continue;");
                             }
                             branching = "else if";
@@ -479,11 +491,9 @@ static class Emitter
         return true;
     }
 
-    static bool TryEmitDeserializeMethodUnion(TypeMeta typeMeta, CodeWriter codeWriter, in SourceProductionContext context)
+    static bool TryEmitDeserializeMethodUnion(TypeMeta typeMeta, CodeWriter codeWriter)
     {
-        var returnType = typeMeta.Symbol.IsValueType
-            ? typeMeta.FullTypeName
-            : $"{typeMeta.FullTypeName}?";
+        var returnType = typeMeta.Symbol.IsValueType ? typeMeta.FullTypeName : $"{typeMeta.FullTypeName}?";
 
         codeWriter.AppendLine("[VYaml.Annotations.Preserve]");
         using var methodScope = codeWriter.BeginBlockScope(
@@ -548,19 +558,21 @@ static class Emitter
                     selectedConstructor = ctorWithAttrs[0];
                     break;
                 case > 1:
-                    context.ReportDiagnostic(Diagnostic.Create(
-                        DiagnosticDescriptors.MultipleConstructorAttribute,
-                        typeMeta.Syntax.Identifier.GetLocation(),
-                        typeMeta.Symbol.Name));
+                    context.ReportDiagnostic(
+                        Diagnostic.Create(
+                            DiagnosticDescriptors.MultipleConstructorAttribute,
+                            typeMeta.Syntax.Identifier.GetLocation(),
+                            typeMeta.Symbol.Name));
                     selectedConstructor = null;
                     constructedMembers = Array.Empty<MemberMeta>();
                     return false;
 
                 default:
-                    context.ReportDiagnostic(Diagnostic.Create(
-                        DiagnosticDescriptors.MultipleConstructorWithoutAttribute,
-                        typeMeta.Syntax.Identifier.GetLocation(),
-                        typeMeta.Symbol.Name));
+                    context.ReportDiagnostic(
+                        Diagnostic.Create(
+                            DiagnosticDescriptors.MultipleConstructorWithoutAttribute,
+                            typeMeta.Syntax.Identifier.GetLocation(),
+                            typeMeta.Symbol.Name));
                     selectedConstructor = null;
                     constructedMembers = Array.Empty<MemberMeta>();
                     return false;
@@ -586,12 +598,13 @@ static class Emitter
             else
             {
                 var location = selectedConstructor.Locations.FirstOrDefault() ??
-                               typeMeta.Syntax.Identifier.GetLocation();
-                context.ReportDiagnostic(Diagnostic.Create(
-                    DiagnosticDescriptors.ConstructorHasNoMatchedParameter,
-                    location,
-                    typeMeta.Symbol.Name,
-                    parameter.Name));
+                    typeMeta.Syntax.Identifier.GetLocation();
+                context.ReportDiagnostic(
+                    Diagnostic.Create(
+                        DiagnosticDescriptors.ConstructorHasNoMatchedParameter,
+                        location,
+                        typeMeta.Symbol.Name,
+                        parameter.Name));
                 constructedMembers = Array.Empty<MemberMeta>();
                 error = true;
             }

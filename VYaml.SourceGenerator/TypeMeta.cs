@@ -14,36 +14,29 @@ public enum NamingConvention
     KebabCase,
 }
 
-class UnionMeta
+internal class UnionMeta(string subTypeTag, INamedTypeSymbol subTypeSymbol)
 {
-    public string SubTypeTag { get; set; }
-    public INamedTypeSymbol SubTypeSymbol { get; set; }
-    public string FullTypeName { get; }
-
-    public UnionMeta(string subTypeTag, INamedTypeSymbol subTypeSymbol)
-    {
-        SubTypeTag = subTypeTag;
-        SubTypeSymbol = subTypeSymbol;
-        FullTypeName = subTypeSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
-    }
+    public string SubTypeTag { get; set; } = subTypeTag;
+    public INamedTypeSymbol SubTypeSymbol { get; set; } = subTypeSymbol;
+    public string FullTypeName { get; } = subTypeSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
 }
 
-class TypeMeta
+internal class TypeMeta
 {
     public TypeDeclarationSyntax Syntax { get; }
     public INamedTypeSymbol Symbol { get; }
     public AttributeData YamlObjectAttribute { get; }
     public string TypeName { get; }
     public string FullTypeName { get; }
+    public string TypeNameWithoutGenerics { get; }
     public IReadOnlyList<IMethodSymbol> Constructors { get; }
     public IReadOnlyList<UnionMeta> UnionMetas { get; }
     public NamingConvention NamingConventionByType { get; } = NamingConvention.LowerCamelCase;
-
     public IReadOnlyList<MemberMeta> MemberMetas => memberMetas ??= GetSerializeMembers();
     public bool IsUnion => UnionMetas.Count > 0;
 
-    ReferenceSymbols references;
-    MemberMeta[]? memberMetas;
+    private readonly ReferenceSymbols references;
+    private MemberMeta[]? memberMetas;
 
     public TypeMeta(
         TypeDeclarationSyntax syntax,
@@ -57,6 +50,7 @@ class TypeMeta
 
         TypeName = symbol.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat);
         FullTypeName = symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+        TypeNameWithoutGenerics = TypeName.Replace('<', '_').Replace('>', '_').Replace(',', '_').Replace(' ', '_');
 
         YamlObjectAttribute = yamlObjectAttribute;
 
@@ -76,9 +70,10 @@ class TypeMeta
         UnionMetas = symbol.GetAttributes()
             .Where(x => SymbolEqualityComparer.Default.Equals(x.AttributeClass, references.YamlObjectUnionAttribute))
             .Where(x => x.ConstructorArguments.Length == 2)
-            .Select(x => new UnionMeta(
-                (string)x.ConstructorArguments[0].Value!,
-                (INamedTypeSymbol)x.ConstructorArguments[1].Value!))
+            .Select(
+                x => new UnionMeta(
+                    (string)x.ConstructorArguments[0].Value!,
+                    (INamedTypeSymbol)x.ConstructorArguments[1].Value!))
             .ToArray();
     }
 
@@ -92,24 +87,25 @@ class TypeMeta
         return Syntax.Parent is TypeDeclarationSyntax;
     }
 
-    MemberMeta[] GetSerializeMembers()
+    private MemberMeta[] GetSerializeMembers()
     {
-        return memberMetas ??= Symbol.GetAllMembers()  // iterate includes parent type
+        return memberMetas ??= Symbol.GetAllMembers() // iterate includes parent type
             .Where(x => x is (IFieldSymbol or IPropertySymbol) and { IsStatic: false, IsImplicitlyDeclared: false })
-            .Where(x =>
-            {
-                if (x.ContainsAttribute(references.YamlIgnoreAttribute)) return false;
-                if (x.DeclaredAccessibility != Accessibility.Public &&
-                    !x.ContainsAttribute(references.YamlMemberAttribute)) return false;
-
-                if (x is IPropertySymbol p)
+            .Where(
+                x =>
                 {
-                    // set only can't be serializable member
-                    if (p.GetMethod == null && p.SetMethod != null) return false;
-                    if (p.IsIndexer) return false;
-                }
-                return true;
-            })
+                    if (x.ContainsAttribute(references.YamlIgnoreAttribute)) return false;
+                    if (x.DeclaredAccessibility != Accessibility.Public &&
+                        !x.ContainsAttribute(references.YamlMemberAttribute)) return false;
+
+                    if (x is IPropertySymbol p)
+                    {
+                        // set only can't be serializable member
+                        if (p.GetMethod == null && p.SetMethod != null) return false;
+                        if (p.IsIndexer) return false;
+                    }
+                    return true;
+                })
             .Select((x, i) => new MemberMeta(x, references, i, NamingConventionByType))
             .OrderBy(x => x.Order)
             .ToArray();
